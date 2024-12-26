@@ -41,6 +41,29 @@ module liquidlogic_framework::sheet {
         repayment: Option<Repayment<Creditor, Debtor, CoinType>>
     }
 
+    // Errors
+
+    const ENotEnoughRepayment: u64 = 0;
+    fun err_not_enough_repayment() { abort ENotEnoughRepayment }
+
+    const ERepayTooMuch: u64 = 1;
+    fun err_repay_too_much() { abort ERepayTooMuch }
+
+    const EDestroyNonEmptySheet: u64 = 2;
+    fun err_destroy_not_empty_sheet() { abort EDestroyNonEmptySheet }
+
+    const EAlreadyRepaid: u64 = 3;
+    fun err_already_repaid() { abort EAlreadyRepaid }
+
+    const ENoRepayment: u64 = 4;
+    fun err_no_repayment() { abort ENoRepayment }
+
+    const ECreditorNotFound: u64 = 5;
+    fun err_creditor_not_found() { abort ECreditorNotFound }
+
+    const EDebtorNotFound: u64 = 6;
+    fun err_debtor_not_found() { abort EDebtorNotFound }
+
     // Public Funs
 
     public fun new<E: drop, T>(_: E): Sheet<E, T> {
@@ -94,7 +117,9 @@ module liquidlogic_framework::sheet {
         balance: Balance<T>,
         _stamp: D,
     ) {
-        assert!(collector.repayment.is_none());
+        if (collector.repayment.is_some()) {
+            err_already_repaid();
+        };
         let balance_value = balance.value();
         let repayment = Repayment {
             balance,
@@ -112,7 +137,9 @@ module liquidlogic_framework::sheet {
     ): Balance<T> {
         sheet.record_collect(&mut collector);
         let Collector { requirement, repayment } = collector;
-        assert!(repayment.is_some());
+        if (repayment.is_none()) {
+            err_no_repayment();
+        };
         let Repayment { 
             balance,
             credit,
@@ -120,7 +147,10 @@ module liquidlogic_framework::sheet {
         } = repayment.destroy_some();
         credit.destroy_none();
         debt.destroy_none();
-        assert!(requirement == balance.value());
+    
+        if (requirement != balance.value()) {
+            err_not_enough_repayment();
+        };
         balance
     }
 
@@ -157,7 +187,9 @@ module liquidlogic_framework::sheet {
         let repayment = collector.repayment.borrow_mut();
         let debt = repayment.debt.extract();
         let creditor = creditor<C>();
-        assert!(sheet.debts.contains(&creditor));
+        if (!sheet.debts.contains(&creditor)) {
+            err_creditor_not_found();
+        };
         sheet.debts.get_mut(&creditor).sub_debt(debt)
     }
 
@@ -168,7 +200,9 @@ module liquidlogic_framework::sheet {
         let repayment = collector.repayment.borrow_mut();
         let credit = repayment.credit.extract();
         let debtor = debtor<D>();
-        assert!(sheet.credits.contains(&debtor));
+        if (!sheet.credits.contains(&debtor)) {
+            err_debtor_not_found();
+        };
         sheet.credits.get_mut(&debtor).sub_credit(credit)
     }
 
@@ -185,7 +219,9 @@ module liquidlogic_framework::sheet {
         _stamp: E,
     ) {
         let debtor = debtor<D>();
-        assert!(sheet.credits.contains(&debtor));
+        if (!sheet.credits.contains(&debtor)) {
+            err_debtor_not_found();
+        };
         let (_, credit) = sheet.credits.remove(&debtor);
         credit.destroy_credit();
     }
@@ -195,7 +231,9 @@ module liquidlogic_framework::sheet {
         _stamp: E,
     ) {
         let creditor = creditor<C>();
-        assert!(sheet.debts.contains(&creditor));
+        if (!sheet.debts.contains(&creditor)) {
+            err_creditor_not_found();
+        };
         let (_, debt) = sheet.debts.remove(&creditor);
         debt.destroy_debt();
     }
@@ -255,7 +293,9 @@ module liquidlogic_framework::sheet {
 
     fun sub_credit<T>(self: &mut Credit<T>, credit: Credit<T>): u64 {
         let Credit(value) = credit;
-        assert!(self.0 >= value);
+        if (self.0 < value) {
+            err_repay_too_much();
+        };
         let result = self.0 - value;
         self.0 = result;
         result
@@ -270,7 +310,9 @@ module liquidlogic_framework::sheet {
 
     fun sub_debt<T>(self: &mut Debt<T>, debt: Debt<T>): u64 {
         let Debt(value) = debt;
-        assert!(self.0 >= value);
+        if (self.0 < value) {
+            err_repay_too_much();
+        };
         let result = self.0 - value;
         self.0 = result;
         result
@@ -278,11 +320,15 @@ module liquidlogic_framework::sheet {
 
     fun destroy_credit<T>(credit: Credit<T>) {
         let Credit(value) = credit;
-        assert!(value == 0);
+        if (value > 0) {
+            err_destroy_not_empty_sheet();
+        };
     }
 
     fun destroy_debt<T>(credit: Debt<T>) {
         let Debt(value) = credit;
-        assert!(value == 0);
+        if (value > 0) {
+            err_destroy_not_empty_sheet();
+        };
     }
 }

@@ -4,7 +4,7 @@ Framework for LiquidLogic
 ## Mainnet
 Package ID
 ```
-0xa90218c8ec02c619b2b4db3e3d32cfeb5c1cf762879ef75bae9f27020751d0f8
+0x4fbf72ca3419021f83969caad38fce86f6c34a19ec3b62e2010b39ff00e8dbda
 ```
 Publisher
 ```
