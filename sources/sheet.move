@@ -154,6 +154,44 @@ module liquidlogic_framework::sheet {
         balance
     }
 
+    public fun add_debtor<E: drop, T, D>(
+        sheet: &mut Sheet<E, T>,
+        _stamp: E,
+    ) {
+        sheet.credits.insert(debtor<D>(), Credit(0));
+    }
+
+    public fun add_creditor<E: drop, T, C>(
+        sheet: &mut Sheet<E, T>,
+        _stamp: E,
+    ) {
+        sheet.debts.insert(creditor<C>(), Debt(0));
+    }
+
+    public fun remove_debtor<E: drop, T, D>(
+        sheet: &mut Sheet<E, T>,
+        _stamp: E,
+    ) {
+        let debtor = debtor<D>();
+        if (!sheet.credits.contains(&debtor)) {
+            err_debtor_not_found();
+        };
+        let (_, credit) = sheet.credits.remove(&debtor);
+        credit.destroy_credit();
+    }
+
+    public fun remove_creditor<E: drop, T, C>(
+        sheet: &mut Sheet<E, T>,
+        _stamp: E,
+    ) {
+        let creditor = creditor<C>();
+        if (!sheet.debts.contains(&creditor)) {
+            err_creditor_not_found();
+        };
+        let (_, debt) = sheet.debts.remove(&creditor);
+        debt.destroy_debt();
+    }
+
     // Internal Funs
 
     fun record_loan<C, D, T>(
@@ -163,7 +201,7 @@ module liquidlogic_framework::sheet {
         let credit = loan.credit.extract();
         let debtor = debtor<D>();
         if (!sheet.credits.contains(&debtor)) {
-            sheet.add_debtor<C, T, D>();
+            err_debtor_not_found();
         };
         sheet.credits.get_mut(&debtor).add_credit(credit)
     }
@@ -175,7 +213,7 @@ module liquidlogic_framework::sheet {
         let debt = loan.debt.extract();
         let creditor = creditor<C>();
         if (!sheet.debts.contains(&creditor)) {
-            sheet.add_creditor<D, T, C>();
+            err_creditor_not_found();
         };
         sheet.debts.get_mut(&creditor).add_debt(debt)
     }
@@ -204,38 +242,6 @@ module liquidlogic_framework::sheet {
             err_debtor_not_found();
         };
         sheet.credits.get_mut(&debtor).sub_credit(credit)
-    }
-
-    fun add_debtor<E, T, D>(sheet: &mut Sheet<E, T>) {
-        sheet.credits.insert(debtor<D>(), Credit(0));
-    }
-
-    fun add_creditor<E, T, C>(sheet: &mut Sheet<E, T>) {
-        sheet.debts.insert(creditor<C>(), Debt(0));
-    }
-
-    public fun remove_debtor<E: drop, T, D>(
-        sheet: &mut Sheet<E, T>,
-        _stamp: E,
-    ) {
-        let debtor = debtor<D>();
-        if (!sheet.credits.contains(&debtor)) {
-            err_debtor_not_found();
-        };
-        let (_, credit) = sheet.credits.remove(&debtor);
-        credit.destroy_credit();
-    }
-
-    public fun remove_creditor<E: drop, T, C>(
-        sheet: &mut Sheet<E, T>,
-        _stamp: E,
-    ) {
-        let creditor = creditor<C>();
-        if (!sheet.debts.contains(&creditor)) {
-            err_creditor_not_found();
-        };
-        let (_, debt) = sheet.debts.remove(&creditor);
-        debt.destroy_debt();
     }
 
     // Getter Funs
