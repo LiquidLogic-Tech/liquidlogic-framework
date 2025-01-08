@@ -1,6 +1,7 @@
 [package]
 name = "LiquidlogicFramework"
 edition = "2024.beta" # edition = "legacy" to use legacy (pre-2024) Move
+published-at = "0x9f37ba0ef8c96ede5d6623f91a702110d346c8bd4691bef76f649f824375790f"
 # license = ""           # e.g., "MIT", "GPL", "Apache 2.0"
 # authors = ["..."]      # e.g., ["Joe Smith (joesmith@noemail.com)", "John Snow (johnsnow@noemail.com)"]
 
@@ -19,7 +20,7 @@ Sui = { git = "https://github.com/MystenLabs/sui.git", subdir = "crates/sui-fram
 # Override = { local = "../conflicting/version", override = true }
 
 [addresses]
-liquidlogic_framework = "0x0"
+liquidlogic_framework = "0xa90218c8ec02c619b2b4db3e3d32cfeb5c1cf762879ef75bae9f27020751d0f8"
 
 # Named addresses will be accessible in Move as `@name`. They're also exported:
 # for example, `std = "0x1"` is exported by the Standard Library.
