@@ -7,7 +7,7 @@ module liquidlogic_framework::float {
     const ESubtrahendTooLarge: u64 = 1;
     fun err_subtrahend_too_large() { abort ESubtrahendTooLarge }
 
-    // 1e18
+    // 1e9
     const WAD: u128 = 1_000_000_000;
 
     public struct Float has copy, store, drop {
