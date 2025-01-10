@@ -1,7 +1,7 @@
 [package]
 name = "LiquidlogicFramework"
-edition = "2024.beta" # edition = "legacy" to use legacy (pre-2024) Move
-published-at = "0x9f37ba0ef8c96ede5d6623f91a702110d346c8bd4691bef76f649f824375790f"
+edition = "2024.beta"                                                               # edition = "legacy" to use legacy (pre-2024) Move
+published-at = "0xd2b2de20b6744388545eec928259eeed351cd6b347963ad569c68a7272a04b35"
 # license = ""           # e.g., "MIT", "GPL", "Apache 2.0"
 # authors = ["..."]      # e.g., ["Joe Smith (joesmith@noemail.com)", "John Snow (johnsnow@noemail.com)"]
 
@@ -35,4 +35,3 @@ liquidlogic_framework = "0xa90218c8ec02c619b2b4db3e3d32cfeb5c1cf762879ef75bae9f2
 # The dev-addresses section allows overwriting named addresses for the `--test`
 # and `--dev` modes.
 # alice = "0xB0B"
-
