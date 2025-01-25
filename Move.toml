@@ -1,12 +1,12 @@
 [package]
 name = "LiquidlogicFramework"
-edition = "2024.beta" # edition = "legacy" to use legacy (pre-2024) Move
-published-at = "0x8534672324e35fcc1a68f9331649a562b372ad3137990b4052f473e4e0b67dfa"
+edition = "2024.beta"                                                               # edition = "legacy" to use legacy (pre-2024) Move
+published-at = "0x5d844d5975f82e067a597b145dca0e39434462d09c03d63f05ad74633b96f634"
 # license = ""           # e.g., "MIT", "GPL", "Apache 2.0"
 # authors = ["..."]      # e.g., ["Joe Smith (joesmith@noemail.com)", "John Snow (johnsnow@noemail.com)"]
 
 [dependencies]
-Sui = { git = "https://github.com/MystenLabs/sui.git", subdir = "crates/sui-framework/packages/sui-framework", rev = "framework/testnet" }
+Sui = { git = "https://github.com/MystenLabs/sui.git", subdir = "crates/sui-framework/packages/sui-framework", rev = "framework/mainnet" }
 
 # For remote import, use the `{ git = "...", subdir = "...", rev = "..." }`.
 # Revision can be a branch, a tag, and a commit hash.
@@ -20,7 +20,8 @@ Sui = { git = "https://github.com/MystenLabs/sui.git", subdir = "crates/sui-fram
 # Override = { local = "../conflicting/version", override = true }
 
 [addresses]
-liquidlogic_framework = "0x8534672324e35fcc1a68f9331649a562b372ad3137990b4052f473e4e0b67dfa"
+# liquidlogic_framework = "0x0"
+liquidlogic_framework = "0x5d844d5975f82e067a597b145dca0e39434462d09c03d63f05ad74633b96f634"
 
 # Named addresses will be accessible in Move as `@name`. They're also exported:
 # for example, `std = "0x1"` is exported by the Standard Library.
@@ -35,4 +36,3 @@ liquidlogic_framework = "0x8534672324e35fcc1a68f9331649a562b372ad3137990b4052f47
 # The dev-addresses section allows overwriting named addresses for the `--test`
 # and `--dev` modes.
 # alice = "0xB0B"
-

@@ -1,5 +1,5 @@
 /// fixed point Float representation. 18 Float places are kept.
-module liquidlogic_framework::float {
+module liquidlogic_framework::double {
 
     const EDividedByZero: u64 = 0;
     fun err_divided_by_zero() { abort EDividedByZero }
@@ -7,51 +7,51 @@ module liquidlogic_framework::float {
     const ESubtrahendTooLarge: u64 = 1;
     fun err_subtrahend_too_large() { abort ESubtrahendTooLarge }
 
-    // 1e9
-    const WAD: u128 = 1_000_000_000;
+    // 1e18
+    const WAD: u256 = 1_000_000_000_000_000_000;
 
     public struct Float has copy, store, drop {
-        value: u128
+        value: u256
     }
 
     public fun from(v: u64): Float {
         Float {
-            value: (v as u128) * WAD
+            value: (v as u256) * WAD
         }
     }
 
     public fun from_percent(v: u8): Float {
         Float {
-            value: (v as u128) * WAD / 100
+            value: (v as u256) * WAD / 100
         }
     }
 
     public fun from_percent_u64(v: u64): Float {
         Float {
-            value: (v as u128) * WAD / 100
+            value: (v as u256) * WAD / 100
         }
     }
 
     public fun from_bps(v: u64): Float {
         Float {
-            value: (v as u128) * WAD / 10_000
+            value: (v as u256) * WAD / 10_000
         }
     }
 
     public fun from_fraction(n: u64, m: u64): Float {
         if (m == 0) err_divided_by_zero();
         Float {
-            value: (n as u128) * WAD / (m as u128)
+            value: (n as u256) * WAD / (m as u256)
         }
     }
 
-    public fun from_scaled_val(v: u128): Float {
+    public fun from_scaled_val(v: u256): Float {
         Float {
             value: v
         }
     }
 
-    public fun to_scaled_val(v: Float): u128 {
+    public fun to_scaled_val(v: Float): u256 {
         v.value
     }
 
@@ -169,7 +169,7 @@ module liquidlogic_framework::float {
         }
     }
 
-    public fun wad(): u128 { WAD }
+    public fun wad(): u256 { WAD }
 
     #[test]
     fun test_basic() {
@@ -203,7 +203,7 @@ module liquidlogic_framework::float {
     fun test_advenced() {
         assert!(from_percent(5).eq(from_bps(500)));
         assert!(from_percent_u64(900) == from(8).add_u64(1));
-        assert!(from_percent_u64(911) == from_scaled_val(9_110_000_000));
+        assert!(from_percent_u64(911) == from_scaled_val(9_110_000_000_000_000_000));
         assert!(from(5).sub_u64(1) == from(24).div_u64(6));
         assert!(from(500).min(from(100)).eq(from(100)));
         assert!(from(100).min(from(500)).eq(from(100)));
